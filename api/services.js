@@ -83,6 +83,8 @@ export async function handleUserMessage (req, res) {
           } catch (error) {
             console.error("Error processing audio message:", error);
             sendWhatsAppMessage(wa_number, "An error occurred while processing your audio.");
+            return res.status(200).json({ status: "error", message: "Internal server error" });
+
           }
         }
         
