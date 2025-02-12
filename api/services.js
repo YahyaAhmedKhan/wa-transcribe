@@ -23,27 +23,23 @@ export async function handleWebhookVerifcation (req, res) {
   }
 
 export async function handleUserMessage (req, res) {
+  let result = { status: "success", message: "Response sent" };
     try {
       const entry = req.body.entry?.[0]?.changes?.[0]?.value;
   
       if (!entry) {
-        console.log("Invalid webhook structure");
-        return res.status(200).json({ status: "error", message: "Invalid payload" });
+        result = { status: "error", message: "Invalid webhook structure" };
+        throw new Error("Invalid webhook structure");
       }
   
       if (entry?.statuses) { // handle status update
-        console.log("Received Status update:");
-  
         const status = entry.statuses[0]?.status;
         const recipient_id = entry.statuses[0]?.recipient_id;
   
         if (status && recipient_id) {
           console.log(`Status Update: ${status} by ${recipient_id}`);
-        } else {
-          console.log("Received a WhatsApp status update but missing details.");
-        }
+        } 
   
-        return res.status(200).json({ status: "ok", message: "Status received" });
       }
       const message = entry?.messages;
     
@@ -53,49 +49,39 @@ export async function handleUserMessage (req, res) {
         const type = message[0].type;
         const message_id = message[0].id;
         if (!wa_number || !user_message || !message_id) {
-          console.log("Missing message details");
-          return res.status(200).json({ status: "error", message: "Invalid message payload" });
+          throw new Error("Invalid message payload");
         }
         sendReadReceipt(message_id);
   
-        console.log("wa_id:", wa_number);
-        console.log("user_message:", user_message);
+        console.log({wa_id: wa_number, user_message: user_message});
         
         let transcription = "No transcription available";
         if (message[0].audio) {
-          try {
-            const audio_id = message[0].audio.id;
-            const audio_url = await getMediaUrl(audio_id);
-            const audio_path = await downloadMedia(audio_url);
-            let transcription = await transcribeAudio(audio_path);
-        
-            if (!transcription || transcription.trim() === "") {
-              sendWhatsAppMessage(wa_number, "Transcription is empty.");
-              return;
-            }
-        
-            const MAX_CHUNK_SIZE = 4096;
-            for (let i = 0; i < transcription.length; i += MAX_CHUNK_SIZE) {
-              const chunk = transcription.substring(i, i + MAX_CHUNK_SIZE);
-              await sendWhatsAppMessage(wa_number, chunk); // Ensure messages are sent sequentially
-            }
-          } catch (error) {
-            console.error("Error processing audio message:", error);
-            sendWhatsAppMessage(wa_number, "An error occurred while processing your audio.");
-            return res.status(200).json({ status: "error", message: "Internal server error" });
-
+          const audio_id = message[0].audio.id;
+          const audio_url = await getMediaUrl(audio_id);
+          const audio_path = await downloadMedia(audio_url);
+          let transcription = await transcribeAudio(audio_path);
+      
+          if (!transcription || transcription.trim() === "") {
+            sendWhatsAppMessage(wa_number, "Transcription is empty.");
+            return;
           }
-        }
+      
+          const MAX_CHUNK_SIZE = 4096;
+          for (let i = 0; i < transcription.length; i += MAX_CHUNK_SIZE) {
+            const chunk = transcription.substring(i, i + MAX_CHUNK_SIZE);
+            await sendWhatsAppMessage(wa_number, chunk); // Ensure messages are sent sequentially
+          }
         
-        return res.status(200).json({ status: "success", message: "Response sent", text: transcription });
+        }
       }
-  
-      return res.status(200).json({ status: "ignored", message: "No relevant data found" });
     } catch (error) {
-      console.error("Error processing webhook:", error);
-      return res.status(200).json({ status: "error", message: "Internal server error" });
+      console.error("Error processing webhook:", error.message);
+      result = { status: "error", message: error.message };
     }
     finally {
+      return res.status(200).json(result);
+      
     }
   }
 
