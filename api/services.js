@@ -23,6 +23,7 @@ export async function handleWebhookVerifcation (req, res) {
   }
 
 export async function handleUserMessage (req, res) {
+    const message_id = req.body.entry?.[0]?.changes?.[0]?.value?.messages[0]?.id;
     try {
       const entry = req.body.entry?.[0]?.changes?.[0]?.value;
   
@@ -50,7 +51,6 @@ export async function handleUserMessage (req, res) {
       if (message) { // handle message received
         const wa_number = message[0].from;
         const user_message = message[0].text?.body || "No message content";
-        const message_id = message[0].id;
         const type = message[0].type;
         // sendReadReceipt(message_id); 
   
