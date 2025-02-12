@@ -23,9 +23,10 @@ export async function handleWebhookVerifcation (req, res) {
   }
 
 export async function handleUserMessage (req, res) {
-    const message_id = req.body.entry?.[0]?.changes?.[0]?.value?.messages[0]?.id;
-    sendReadReceipt(message_id);
     try {
+
+      const message_id = req.body.entry?.[0]?.changes?.[0]?.value?.messages[0]?.id;
+      sendReadReceipt(message_id);
       const entry = req.body.entry?.[0]?.changes?.[0]?.value;
   
       if (!entry) {
