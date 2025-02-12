@@ -102,7 +102,7 @@ export async function downloadMedia(mediaUrl) {
       // Extract file extension from content type
       const contentType = response.headers['content-type'];
       const extension = contentType ? contentType.split('/')[1] : 'bin';
-      const fileName = `aud.${extension}`;
+      const fileName = `tmp/aud.${extension}`;
       const filePath = path.basename(fileName);
   
       const writer = fs.createWriteStream(filePath);
