@@ -93,6 +93,8 @@ export async function getMediaUrl(mediaId) {
 }
 
 export async function downloadMedia(mediaUrl) {
+    const tmpPath = path.join("/tmp", "aud");
+
     try {
       const response = await axios({
         method: 'GET',
@@ -106,8 +108,8 @@ export async function downloadMedia(mediaUrl) {
       // Extract file extension from content type
       const contentType = response.headers['content-type'];
       const extension = contentType ? contentType.split('/')[1] : 'bin';
-      const fileName = `tmp/aud.${extension}`;
-      const filePath = path.basename(fileName);
+      const fileName = `aud.${extension}`;
+      const filePath = path.join(`tmp/${fileName}`);
   
       const writer = fs.createWriteStream(filePath);
       response.data.pipe(writer);
