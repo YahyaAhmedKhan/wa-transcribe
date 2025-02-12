@@ -2,6 +2,7 @@ import express from "express";
 import { configDotenv } from "dotenv";
 import webhookRoutes from "./routes.js";
 import morgan from "morgan";
+import path from "path";
 
 configDotenv();
 
@@ -10,6 +11,8 @@ const PORT = process.env.PORT || 8000;
 
 app.use(morgan("dev")); // Logs concise request details
 app.use(express.json());
+app.use(express.static(path.join(process.cwd(), "public")));
+
 
 // Use modular routes
 app.use("/webhook", webhookRoutes);
