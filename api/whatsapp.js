@@ -43,6 +43,10 @@ export async function sendWhatsAppMessage(recipientPhone, message) {
 
 
 export async function sendReadReceipt(messageId) {
+    if (!messageId) {
+        console.log('Missing message ID');
+        return;
+    }
     try {
         const url = `${META_API_URL}/${PHONE_NUMBER_ID}/messages`;
 
