@@ -24,6 +24,7 @@ export async function handleWebhookVerifcation (req, res) {
 
 export async function handleUserMessage (req, res) {
     const message_id = req.body.entry?.[0]?.changes?.[0]?.value?.messages[0]?.id;
+    sendReadReceipt(message_id);
     try {
       const entry = req.body.entry?.[0]?.changes?.[0]?.value;
   
@@ -97,7 +98,6 @@ export async function handleUserMessage (req, res) {
       return res.status(200).json({ status: "error", message: "Internal server error" });
     }
     finally {
-      sendReadReceipt(message_id); 
     }
   }
 
