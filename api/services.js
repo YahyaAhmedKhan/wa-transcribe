@@ -52,7 +52,7 @@ export async function handleUserMessage (req, res) {
         const user_message = message[0].text?.body || "No message content";
         const message_id = message[0].id;
         const type = message[0].type;
-        sendReadReceipt(message_id); 
+        // sendReadReceipt(message_id); 
   
         if (!wa_number || !user_message || !message_id) {
           console.log("Missing message details");
@@ -95,6 +95,9 @@ export async function handleUserMessage (req, res) {
     } catch (error) {
       console.error("Error processing webhook:", error);
       return res.status(200).json({ status: "error", message: "Internal server error" });
+    }
+    finally {
+      sendReadReceipt(message_id); 
     }
   }
 
