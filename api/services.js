@@ -24,9 +24,6 @@ export async function handleWebhookVerifcation (req, res) {
 
 export async function handleUserMessage (req, res) {
     try {
-
-      const message_id = req.body.entry?.[0]?.changes?.[0]?.value?.messages[0]?.id;
-      sendReadReceipt(message_id);
       const entry = req.body.entry?.[0]?.changes?.[0]?.value;
   
       if (!entry) {
@@ -54,12 +51,12 @@ export async function handleUserMessage (req, res) {
         const wa_number = message[0].from;
         const user_message = message[0].text?.body || "No message content";
         const type = message[0].type;
-        // sendReadReceipt(message_id); 
-  
+        const message_id = message[0].id;
         if (!wa_number || !user_message || !message_id) {
           console.log("Missing message details");
           return res.status(200).json({ status: "error", message: "Invalid message payload" });
         }
+        sendReadReceipt(message_id);
   
         console.log("wa_id:", wa_number);
         console.log("user_message:", user_message);
