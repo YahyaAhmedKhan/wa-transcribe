@@ -2,6 +2,7 @@ import fs from "fs";
 import Groq from "groq-sdk";
 import dotenv from "dotenv";
 dotenv.config();
+import { ElevenLabsClient } from "elevenlabs";
 
 // Initialize the Groq client
 const groq = new Groq();
@@ -48,4 +49,4 @@ export async function transcribeAudio(filepath){
 }
 
 
-// console.log(await transcribeAudio("aud.ogg"));
+// console.log(await transcribeAudio("test.mp3"));
