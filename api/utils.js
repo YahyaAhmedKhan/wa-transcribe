@@ -18,14 +18,6 @@ export async function getGroqChatCompletion (transcript, model=MODEL) {
      - Convert **unordered information** into **bulleted lists (\`- Item\`)**.  
      - Convert **step-by-step instructions** into **numbered lists (\`1. Step\`)**.
 
-  3. **Transliteration for Urdu/Hindi:**  
-     - If the transcript is in **Urdu or Hindi**, transliterate it into **Roman Urdu** (Urdu written in the Latin alphabet).  
-     - Example: "Mujhe tumse baat karni hai" instead of "مجھے تم سے بات کرنی ہے".
-
-  4. **Ensure Conciseness & Clarity:**  
-     - Remove unnecessary fillers or repetitive words.
-     - Keep the tone **casual and conversational**, as commonly used on WhatsApp.
-
   **Important:**  
   - Output **only** the formatted message without any extra explanations.  
   - Do not include phrases like "Here is the formatted message" or "Cleaned message:".
