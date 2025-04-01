@@ -1,6 +1,6 @@
 import { get } from "http";
 import { sendWhatsAppMessage, getMediaUrl, downloadMedia, sendReadReceipt } from "./whatsapp.js";
-import {transcribeAudio} from "./whisper.js";
+import {transcribeAudio, translateAudio} from "./whisper.js";
 
 
 export async function handleWebhookVerifcation (req, res) {
@@ -60,7 +60,7 @@ export async function handleUserMessage (req, res) {
           const audio_id = message[0].audio.id;
           const audio_url = await getMediaUrl(audio_id);
           const audio_path = await downloadMedia(audio_url);
-          let transcription = await transcribeAudio(audio_path);
+          let transcription = await translateAudio(audio_path);
       
           if (!transcription || transcription.trim() === "") {
             sendWhatsAppMessage(wa_number, "Transcription is empty.");
@@ -105,6 +105,6 @@ export async function handleUserMessage (req, res) {
       const audio_id = message[0].audio.id;
       const audio_url = await getMediaUrl(audio_id);
       const audio_path = await downloadMedia(audio_url);
-      transcription = await transcribeAudio(audio_path);
+      transcription = await translateAudio(audio_path);
         }
   }
